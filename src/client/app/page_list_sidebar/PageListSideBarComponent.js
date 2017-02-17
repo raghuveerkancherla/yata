@@ -46,7 +46,10 @@ var PageListSidebarComponent = React.createClass({
           onAddPage={this.props.onAddPage}
         />
         <SwitchPageComponent
-          onPageChange={this.props.onPageChange}/>
+          onPageChange={this.props.onPageChange}
+          customPages={this.props.customPages}
+          onAddPage={this.props.onAddPage}
+        />
       </div>
     );
   }

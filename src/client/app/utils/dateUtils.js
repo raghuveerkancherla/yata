@@ -1,5 +1,6 @@
 import moment from 'moment';
 import chrono from 'chrono-node';
+import _ from 'lodash';
 
 
 function getDisplayDate(date) {
@@ -26,4 +27,33 @@ function getDateFromNL(userInput){
   return date != null ? moment(date) : null;
 }
 
-export default {getDateKey, getDisplayDate, getDateFromNL};
+function getWeekDaySuggestions(){
+  var nextMondayDate = new Date();
+  nextMondayDate.setDate(nextMondayDate.getDate() + (7-nextMondayDate.getDay())%7+1);
+  var nextMonday = moment(nextMondayDate);
+
+  var nextWeekDays = _.map(_.range(0,7,1), function (delta) {
+    var date = nextMonday.clone();
+    date.add(delta, 'days');
+    return {
+      pageKey: getDateKey(date),
+      displayName: 'Next '.concat(date.format('dddd')),
+      date: date,
+      pageType: 'date'
+    };
+  });
+  var prevWeekDays = _.map(_.range(1,8,1), function (delta) {
+    var date = nextMonday.clone();
+    date.add(-1*delta, 'days');
+
+    return {
+      pageKey: getDateKey(date),
+      displayName: 'Prev '.concat(date.format('dddd')),
+      date: date
+    };
+  });
+
+  return _.union(nextWeekDays, prevWeekDays);
+}
+
+export default {getDateKey, getDateFromNL, getWeekDaySuggestions, getDisplayDate};

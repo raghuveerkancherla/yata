@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch) => {
     onAddPage: (pageName) => {
       dispatch(addNewPage(pageName));
       // add a new page and then switch to it
-      dispatch(changeCurrentPage(pageName));
+      dispatch(changeCurrentPage(pageName, 'custom'));
     }
   };
 };

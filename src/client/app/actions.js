@@ -10,7 +10,8 @@ export const changeCurrentPage = (pageKey, pageType) => {
 export const addNewPage = (pageName) => {
   return {
     type: 'ADD_PAGE',
-    pageName: pageName
+    pageName: pageName,
+    pageType: 'custom'
   };
 };
 

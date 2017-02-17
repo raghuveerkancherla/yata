@@ -1,26 +1,31 @@
 import Mousetrap from 'mousetrap';
 import React from 'react';
-import dateUtils from '../../utils/dateUtils';
+import AutoSuggestPageInput from './AutoSuggestPage';
 
 var SwitchPageComponent = React.createClass({
   propTypes: {
-    onPageChange: React.PropTypes.func
+    onPageChange: React.PropTypes.func,
+    customPages: React.PropTypes.array,
+    onAddPage: React.PropTypes.func
   },
 
   getInitialState: function () {
-    return {pageSwitcherVisibility: 'hidden'};
+    return {
+      pageSwitcherVisibility: 'hidden',
+      pageNotFoundVisibility: 'hidden'
+    };
   },
 
   componentDidMount: function () {
     Mousetrap.bind(['command+k'], this.showPageSwitcher);
   },
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.pageSwitcherVisibility == 'hidden' && this.state.pageSwitcherVisibility == 'visible') {
-      // We transitioned from hidden to shown. Focus the text box.
-      this.pageNameElement.focus();
-    }
-  },
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (prevState.pageSwitcherVisibility == 'hidden' && this.state.pageSwitcherVisibility == 'visible') {
+  //     // We transitioned from hidden to shown. Focus the text box.
+  //     this.pageNameElement.focus();
+  //   }
+  // },
 
   componentWillUnmount: function () {
     Mousetrap.unbind(['command+k'], this.showPageSwitcher);
@@ -32,30 +37,42 @@ var SwitchPageComponent = React.createClass({
     this.setState({pageSwitcherVisibility: 'visible'});
   },
 
-  handlePageChange: function (e) {
+  handlePageChangeSubmit: function (e) {
     e.preventDefault();
-    var pageName;
-    pageName = this.pageNameElement.value;
-    var parsedDate = dateUtils.getDateFromNL(pageName);
+    var matchedSuggestion = this.pageNameElement.state.matchedSuggestion;
+    var userChoseAdd = this.pageNameElement.state.userChoseAddPage;
 
-    var pageType = parsedDate != null ? 'date' : 'custom';
-    pageName = parsedDate != null ? dateUtils.getDateKey(parsedDate) : pageName;
+    if (!userChoseAdd && matchedSuggestion == null){
+      this.setState({pageNotFoundVisibility: 'visible'});
+    } else {
+      var pageName = this.pageNameElement.state.value;
+      var pageKey = matchedSuggestion ? matchedSuggestion.pageKey : pageName;
+      var pageType = matchedSuggestion ? matchedSuggestion.pageType : 'custom';
 
-    this.props.onPageChange(pageName, pageType);
-    this.setState({pageSwitcherVisibility: 'hidden'});
+      this.props.onPageChange(pageKey, pageType);
+      this.setState({pageSwitcherVisibility: 'hidden', pageNotFoundVisibility: 'hidden'});
+    }
   },
 
   render: function () {
-    var style = {
+    var pageSwitcherStyle = {
       visibility: this.state.pageSwitcherVisibility
+    };
+    var pageNotFoundStyle = {
+      visibility: this.state.pageNotFoundVisibility
     };
     return (
       <div>
         <a onClick={this.showPageSwitcher}><b>Switch Page</b></a>
-        <div style={style}>
-          <form onSubmit={this.handlePageChange}>
-            <input type="text" ref={(input) => {this.pageNameElement=input;}}/>
+        <div style={pageSwitcherStyle}>
+          <form onSubmit={this.handlePageChangeSubmit}>
+            <AutoSuggestPageInput
+              ref={(input) => {this.pageNameElement=input;}}
+              customPages={this.props.customPages}
+              onAddPage={this.props.onAddPage}
+            />
             <input type="submit" value="Save"/>
+            <span style={pageNotFoundStyle}>Page Not found</span>
           </form>
         </div>
       </div>

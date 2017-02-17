@@ -21,22 +21,9 @@ function customPages(state=[], action) {
       return [
         ...state,
         {'pageKey': action.pageName,
-        'displayName': action.pageName}
+        'displayName': action.pageName,
+        'pageType': action.pageType}
       ];
-    case 'CHANGE_PAGE':
-      var existingPage = _.find(state, (page) => {
-          return page.pageKey == action.pageKey;
-      });
-
-      if (action.pageType == 'custom' && !existingPage) {
-        return [
-        ...state,
-        {'pageKey': action.pageKey,
-        'displayName': action.pageKey}
-      ];
-      } else {
-        return Object.assign([], state);
-      }
     default:
       return Object.assign([], state);
   }
