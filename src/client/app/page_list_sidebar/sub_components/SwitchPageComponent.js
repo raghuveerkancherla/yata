@@ -20,12 +20,13 @@ var SwitchPageComponent = React.createClass({
     Mousetrap.bind(['command+k'], this.showPageSwitcher);
   },
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevState.pageSwitcherVisibility == 'hidden' && this.state.pageSwitcherVisibility == 'visible') {
-  //     // We transitioned from hidden to shown. Focus the text box.
-  //     this.pageNameElement.focus();
-  //   }
-  // },
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.pageSwitcherVisibility == 'hidden' && this.state.pageSwitcherVisibility == 'visible') {
+      // We transitioned from hidden to shown. Focus the text box.
+      // this.pageNameElement.focus();
+      document.getElementById('page-autosuggest-input').focus();
+    }
+  },
 
   componentWillUnmount: function () {
     Mousetrap.unbind(['command+k'], this.showPageSwitcher);
@@ -67,6 +68,7 @@ var SwitchPageComponent = React.createClass({
         <div style={pageSwitcherStyle}>
           <form onSubmit={this.handlePageChangeSubmit}>
             <AutoSuggestPageInput
+              id="page-autosuggest-input"
               ref={(input) => {this.pageNameElement=input;}}
               customPages={this.props.customPages}
               onAddPage={this.props.onAddPage}

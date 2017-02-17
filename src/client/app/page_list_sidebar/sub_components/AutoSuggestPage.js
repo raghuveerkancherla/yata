@@ -18,7 +18,6 @@ const AutoSuggestPageInput = React.createClass({
   },
 
   onChange: function(event, { newValue, method }) {
-    console.log('onChange', newValue, this.state);
     if (newValue != 'AddPage') {
       this.setState({
         value: newValue
@@ -99,20 +98,22 @@ const AutoSuggestPageInput = React.createClass({
   render: function() {
     const { value, suggestions } = this.state;
     const inputProps = {
+      id: 'page-autosuggest-input',
       placeholder: 'Type anything',
       value,
       onChange: this.onChange
     };
 
     return (
-      <Autosuggest 
+      <Autosuggest
         suggestions={suggestions}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
         onSuggestionSelected={this.onSuggestionSelected}
         getSuggestionValue={this.getSuggestionValue}
         renderSuggestion={this.renderSuggestion}
-        inputProps={inputProps} />
+        inputProps={inputProps}
+      />
     );
   }
 });
