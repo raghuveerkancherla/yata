@@ -1,7 +1,7 @@
 import { createStore } from 'redux';
 import rootReducer from './rootReducer';
 
-export default function configureStore(initialState) {
+function configureStore(initialState) {
   const store = (window.devToolsExtension ? window.devToolsExtension()(createStore) : createStore)(rootReducer, initialState);
 
   if (module.hot) {
@@ -11,6 +11,14 @@ export default function configureStore(initialState) {
       store.replaceReducer(nextReducer);
     });
   }
-
   return store;
 }
+const persistedState = localStorage.getItem('reduxState') ? JSON.parse(localStorage.getItem('reduxState')) : {};
+var store = configureStore(persistedState);
+
+store.subscribe(()=>{
+  console.log('storing data to local');
+  localStorage.setItem('reduxState', JSON.stringify(store.getState()));
+});
+
+export default store;

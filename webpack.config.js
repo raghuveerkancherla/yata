@@ -21,6 +21,22 @@ var config = {
         test : /\.jsx?/,
         include : APP_DIR,
         loaders : ['babel-loader']
+      },
+      {
+        test: /\.(less|css)$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              camelCase: true,
+              importLoaders: 1,
+              localIdentName: '[name]__[local]___[hash:base64:5]'
+            }
+          },
+          'less-loader'
+        ]
       }
     ]
   },

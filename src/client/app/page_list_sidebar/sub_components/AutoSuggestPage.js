@@ -2,6 +2,7 @@ import Autosuggest from 'react-autosuggest';
 import React from 'react';
 import dateUtils from '../../utils/dateUtils';
 import _ from 'lodash';
+import AutoSuggestTheme from './AutoSuggestStyles.css';
 
 const AutoSuggestPageInput = React.createClass({
   propTypes: {
@@ -13,12 +14,14 @@ const AutoSuggestPageInput = React.createClass({
     return {
       value: '',
       suggestions: [],
-      userChoseAddPage: false
+      userChoseAddPage: false,
+      matchedSuggestion: null
     };
   },
 
   onChange: function(event, { newValue, method }) {
-    if (newValue != 'AddPage') {
+
+    if (newValue != 'AddPage' && method == 'type') {
       this.setState({
         value: newValue
       });
@@ -106,6 +109,7 @@ const AutoSuggestPageInput = React.createClass({
 
     return (
       <Autosuggest
+        theme={AutoSuggestTheme}
         suggestions={suggestions}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
