@@ -15,12 +15,12 @@ var PageLink = React.createClass({
 
   render: function () {
     return (
-      <span>
+      <div>
         &nbsp;
         <a onClick={this.handleClick}>
           {this.props.displayText}
-        </a>&nbsp;|
-      </span>
+        </a>&nbsp;
+      </div>
     );
   }
 });

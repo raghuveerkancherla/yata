@@ -7,7 +7,6 @@ import AddPageComponent from './sub_components/AddPageComponent';
 import PageLink from './sub_components/PageLink';
 import PageSearchComponent from './sub_components/PageSearcherComponent';
 import PageSwitcherModal from './sub_components/PageSwitcherModal';
-import styles from './SideBarStyles.css';
 
 
 var PageListSidebarComponent = React.createClass({
@@ -25,7 +24,11 @@ var PageListSidebarComponent = React.createClass({
       });
 
     return (
-      <div className={styles.test}>
+      <div>
+        <PageSearchComponent
+          onPageChange={this.props.onPageChange}
+          customPages={this.props.customPages}
+        />
         {_.map(dates_to_display, (date_to_display) => {
           return (<PageLink
             key={dateUtils.getDateKey(date_to_display)}
@@ -48,10 +51,7 @@ var PageListSidebarComponent = React.createClass({
         <AddPageComponent
           onAddPage={this.props.onAddPage}
         />
-        <PageSearchComponent
-          onPageChange={this.props.onPageChange}
-          customPages={this.props.customPages}
-        />
+
         <PageSwitcherModal
           onPageChange={this.props.onPageChange}
           customPages={this.props.customPages}

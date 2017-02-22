@@ -2,7 +2,7 @@ import Autosuggest from 'react-autosuggest';
 import React from 'react';
 import dateUtils from '../../utils/dateUtils';
 import _ from 'lodash';
-import AutoSuggestTheme from './AutoSuggestStyles.css';
+import styles from './styles.css';
 
 const AutoSuggestPageInput = React.createClass({
   propTypes: {
@@ -109,7 +109,7 @@ const AutoSuggestPageInput = React.createClass({
 
     return (
       <Autosuggest
-        theme={AutoSuggestTheme}
+        theme={styles}
         suggestions={suggestions}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}

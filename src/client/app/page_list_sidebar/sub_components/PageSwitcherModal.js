@@ -43,15 +43,15 @@ var PageSwitcherModal = React.createClass({
       var pageType = matchedSuggestion ? matchedSuggestion.pageType : 'custom';
 
       this.props.onPageChange(pageKey, pageType);
-      this.setState({pageSwitcherVisibility: 'hidden', pageNotFoundVisibility: 'hidden'});
+      this.close();
     }
   },
 
   render: function () {
     return (
       <Modal show={this.state.showModal} onHide={this.close}>
-        <Modal.Body>
-          <div>
+        <Modal.Body className="row">
+          <div className="col-md-2 col-md-offset-5">
             <form onSubmit={this.handlePageChangeSubmit}>
               <AutoSuggestPageInput
                 ref={(input) => {this.pageNameElement=input;}}

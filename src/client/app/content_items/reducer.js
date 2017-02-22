@@ -1,16 +1,13 @@
 /**
  * Created by raghu on 10/02/17.
  */
+import _ from 'lodash';
+import generateUid from '../utils/uniqueKeyGenerator';
 
 const todo = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_TODO':
-      return {
-        id: action.id,
-        text: action.text,
-        completed: false,
-        pages: [action.currentPage]
-      };
+      return emptyTodoForPage(action.currentPage, action.text);
     case 'EDIT_TODO':
       if (state.id !== action.id) {
         return state;
@@ -31,14 +28,26 @@ const todo = (state = {}, action) => {
   }
 };
 
+const emptyTodoForPage = (page, text) => {
+  var newTodoID = generateUid().toString();
+  return {
+        id: newTodoID,
+        text: text,
+        completed: false,
+        pages: [page]
+      };
+}
+
 const contentItems = (state = [], action) => {
   switch (action.type) {
     case 'ADD_TODO':
-      var nextTodoID = state.length +1;
-      action.id = nextTodoID.toString();
+      var afterObjIndex = _.findIndex(
+        state, (contentItem) => {return contentItem.id == action.afterObjId;});
+      var newItemIndex = afterObjIndex < 0 ? state.length : afterObjIndex + 1;
       return [
-        ...state,
-        todo(undefined, action)
+        ..._.slice(state, 0, newItemIndex),
+        todo(undefined, action),
+        ..._.slice(state, newItemIndex)
       ];
     case 'EDIT_TODO':
       return state.map(t =>
@@ -48,6 +57,8 @@ const contentItems = (state = [], action) => {
       return state.map(t =>
         todo(t, action)
       );
+    case 'REMOVE_TODO':
+      return _.filter(state, (todo) => {return todo.id != action.id});
     default:
       return state;
   }

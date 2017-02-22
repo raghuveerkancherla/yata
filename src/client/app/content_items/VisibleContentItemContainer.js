@@ -2,7 +2,7 @@
 
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { toggleContentItem, addContentItem, editContentItem } from '../actions';
+import { toggleContentItem, addContentItem, editContentItem, removeContentItem  } from '../actions';
 import ContentItemList from './ContentItemList';
 
 const getVisibleContentItems = (contentItems, filter, currentPage) => {
@@ -32,8 +32,11 @@ const mapDispatchToProps = (dispatch) => {
     onContentItemToggle: (id) => {
       dispatch(toggleContentItem(id));
     },
-    onAddContentItem: (text, currentPage) => {
-      dispatch(addContentItem(text, currentPage));
+    onAddContentItem: (text, currentPage, afterObjId) => {
+      dispatch(addContentItem(text, currentPage, afterObjId));
+    },
+    onRemoveContentItem: (id) => {
+      dispatch(removeContentItem(id));
     },
     saveContentofItem: (id, text) => {
       dispatch(editContentItem(id, text) );

@@ -1,4 +1,3 @@
-import Mousetrap from 'mousetrap';
 import React from 'react';
 import AutoSuggestPageInput from './AutoSuggestPage';
 

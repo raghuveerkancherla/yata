@@ -15,11 +15,19 @@ export const addNewPage = (pageName) => {
   };
 };
 
-export const addContentItem = (text, currentPage) => {
+export const addContentItem = (text, currentPage, afterObjId) => {
   return {
     type: 'ADD_TODO',
     text,
-    currentPage
+    currentPage,
+    afterObjId
+  };
+};
+
+export const removeContentItem = (id) => {
+  return {
+    type: 'REMOVE_TODO',
+    id
   };
 };
 
