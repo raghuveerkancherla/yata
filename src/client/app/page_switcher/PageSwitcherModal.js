@@ -1,33 +1,41 @@
-import Mousetrap from 'mousetrap';
 import React from 'react';
-import AutoSuggestPageInput from './AutoSuggestPage';
+import AutoSuggestPageInput from '../page_list_sidebar/sub_components/AutoSuggestPage';
 import {Modal} from 'react-bootstrap';
+import Mousetrap from '../utils/mousetrap';
+import styles from './styles.less';
 
 var PageSwitcherModal = React.createClass({
   propTypes: {
     onPageChange: React.PropTypes.func,
     customPages: React.PropTypes.array,
-    onAddPage: React.PropTypes.func
+    onAddPage: React.PropTypes.func,
+    onShowPageSwitcher: React.PropTypes.func,
+    onHidePageSwitcher: React.PropTypes.func,
+    pageSwitcher: React.PropTypes.object
   },
 
-  getInitialState: function() {
-    return { showModal: false };
+  getInitialState: function () {
+    return {
+      pageKey: null, pageType: null
+    };
   },
 
   componentDidMount: function () {
-    Mousetrap.bind(['command+k'], this.open);
+    Mousetrap.bindGlobal(['command+k'], this.open);
+
   },
 
   componentWillUnmount: function () {
-    Mousetrap.unbind(['command+k'], this.open);
+    Mousetrap.unbindGlobal(['command+k'], this.open);
+
   },
 
   open: function() {
-    this.setState({ showModal: true });
+    this.props.onShowPageSwitcher();
   },
 
   close: function() {
-    this.setState({ showModal: false });
+    this.props.onHidePageSwitcher();
   },
 
   handlePageChangeSubmit: function (e) {
@@ -41,17 +49,23 @@ var PageSwitcherModal = React.createClass({
       var pageName = this.pageNameElement.state.value;
       var pageKey = matchedSuggestion ? matchedSuggestion.pageKey : pageName;
       var pageType = matchedSuggestion ? matchedSuggestion.pageType : 'custom';
-
-      this.props.onPageChange(pageKey, pageType);
       this.close();
+      this.setState({pageKey: pageKey, pageType: pageType});
+    }
+  },
+
+  changePage: function () {
+    if (this.state.pageKey && this.state.pageType){
+      this.props.onPageChange(this.state.pageKey, this.state.pageType);
     }
   },
 
   render: function () {
     return (
-      <Modal show={this.state.showModal} onHide={this.close}>
-        <Modal.Body className="row">
-          <div className="col-md-2 col-md-offset-5">
+      <Modal show={this.props.pageSwitcher.show} onHide={this.close} onExited={this.changePage}>
+        <Modal.Body>
+          <div className={styles['page-switcher-body']}>
+            <div className={styles['help-text']}>Jump to a date or page</div>
             <form onSubmit={this.handlePageChangeSubmit}>
               <AutoSuggestPageInput
                 ref={(input) => {this.pageNameElement=input;}}
@@ -60,6 +74,7 @@ var PageSwitcherModal = React.createClass({
               />
             </form>
           </div>
+
         </Modal.Body>
       </Modal>
     );
@@ -67,6 +82,3 @@ var PageSwitcherModal = React.createClass({
 });
 
 export default PageSwitcherModal;
-
-
-

@@ -7,13 +7,14 @@ import generateUid from '../utils/uniqueKeyGenerator';
 const todo = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_TODO':
-      return emptyTodoForPage(action.currentPage, action.text);
+      return emptyTodoForPage(action.currentPage, action.text, action.status);
     case 'EDIT_TODO':
       if (state.id !== action.id) {
         return state;
       }
       return Object.assign({}, state, {
-        text: action.text
+        text: action.text,
+        isFocused: action.isFocused
       });
     case 'TOGGLE_TODO':
       if (state.id !== action.id) {
@@ -28,15 +29,16 @@ const todo = (state = {}, action) => {
   }
 };
 
-const emptyTodoForPage = (page, text) => {
+const emptyTodoForPage = (page, text, status) => {
   var newTodoID = generateUid().toString();
   return {
         id: newTodoID,
-        text: text,
-        completed: false,
+        text: text || '',
+        completed: status || false,
+        isFocused: true,
         pages: [page]
       };
-}
+};
 
 const contentItems = (state = [], action) => {
   switch (action.type) {
@@ -58,7 +60,17 @@ const contentItems = (state = [], action) => {
         todo(t, action)
       );
     case 'REMOVE_TODO':
-      return _.filter(state, (todo) => {return todo.id != action.id});
+      return _.filter(_.map(state, function (item) {
+        if (item.id == action.idToFocusNext) {
+          return _.merge(item, {isFocused: true});
+        } else if (item.id != action.id) {
+          return item;
+        } else {
+          return null;
+        }
+      }), (item) => {return !_.isNull(item)});
+
+
     default:
       return state;
   }

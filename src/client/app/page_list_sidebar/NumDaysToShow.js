@@ -1,6 +1,6 @@
 
-const forward = 3;
-const backward = 3;
+const forward = 2;
+const backward = 2;
 
 export default {forward, backward};
 

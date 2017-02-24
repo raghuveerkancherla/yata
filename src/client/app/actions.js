@@ -15,27 +15,30 @@ export const addNewPage = (pageName) => {
   };
 };
 
-export const addContentItem = (text, currentPage, afterObjId) => {
+export const addContentItem = (text, currentPage, status, afterObjId) => {
   return {
     type: 'ADD_TODO',
     text,
     currentPage,
+    status,
     afterObjId
   };
 };
 
-export const removeContentItem = (id) => {
+export const removeContentItem = (id, idToFocusNext) => {
   return {
     type: 'REMOVE_TODO',
-    id
+    id,
+    idToFocusNext
   };
 };
 
-export const editContentItem = (id, text) => {
+export const editContentItem = (id, text, isFocused) => {
   return {
     type: 'EDIT_TODO',
     id,
-    text
+    text,
+    isFocused
   };
 };
 
@@ -50,5 +53,12 @@ export const toggleContentItem = (id) => {
   return {
     type: 'TOGGLE_TODO',
     id
+  };
+};
+
+export const changePageSwitcherVisibility = (status) => {
+  return {
+    type: 'CHANGE_PAGE_SWITCHER_VISIBILITY',
+    status: status
   };
 };

@@ -1,0 +1,39 @@
+@lhc: 1.5rem;
+
+.sidebar-list-wrapper {
+  margin-top: 3 * @lhc;
+  margin-left: -15px;
+}
+
+.date-bookmark-wrapper{
+  width: 100%;
+  border: 1px solid #ddd;
+  border-left: 0px;
+  margin: 0.3*@lhc 0;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.current-bookmark-wrapper {
+  margin-left:-1px !important;
+  border-left:1px solid #ffffff !important;
+}
+
+.custom-bookmark-wrapper {
+  .date-bookmark-wrapper
+}
+
+.page-switcher-wrapper{
+  .date-bookmark-wrapper;
+  border: none;
+  text-align: center;
+
+  .page-switcher{
+    min-height:3.2*@lhc;
+    display:block;
+    width: 100%;
+    &:hover{
+      cursor: pointer;
+    }
+  }
+}

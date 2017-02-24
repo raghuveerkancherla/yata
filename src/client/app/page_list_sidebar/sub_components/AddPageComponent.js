@@ -1,4 +1,7 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+import styles from './styles.less';
+import {Popover, Overlay} from 'react-bootstrap';
 
 var AddPageComponent = React.createClass({
   propTypes: {
@@ -6,42 +9,45 @@ var AddPageComponent = React.createClass({
   },
 
   getInitialState: function () {
-    return {addPageVisibility: 'hidden'};
-  },
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.addPageVisibility == 'hidden' && this.state.addPageVisibility == 'visible') {
-      // We transitioned from hidden to shown. Focus the text box.
-      this.pageNameElement.focus();
-    }
-  },
-
-  onAddPageClick: function (e) {
-    e && e.preventDefault();
-    // show Add new page form
-    this.setState({addPageVisibility: 'visible'});
+    return {
+      'display': false
+    };
   },
 
   handleAddPageSubmit: function (e) {
-    e.preventDefault();
+    e && e.preventDefault();
     var newPageName = this.pageNameElement.value;
     this.props.onAddPage(newPageName);
-    this.setState({addPageVisibility: 'hidden'});
+    this.setState({'display': false});
   },
 
   render: function () {
-    var style = {
-      visibility: this.state.addPageVisibility
-    };
-    return (
-      <div>
-        <a onClick={this.onAddPageClick}><b> +Add new page </b></a>
-        <div style={style}>
+    const addPagePopover = (
+      <Popover title="Add a new page" id="add-page-popover">
+        <div>
           <form onSubmit={this.handleAddPageSubmit}>
-            <input type="text" ref={(input) => {this.pageNameElement=input;}}/>
+            <input type="text"
+                   ref={(input) => {this.pageNameElement=input;}}
+                   placeholder="Ex: Holiday planning"
+                   autoFocus={true}
+            />
             <input type="submit" value="Save"/>
           </form>
         </div>
+      </Popover>
+    );
+    return (
+      <div>
+        <Overlay placement="bottom" show={this.state.display}
+                 onHide={() => {this.setState({'display': false});}}
+                 target={() => (ReactDOM.findDOMNode(this.addPageButton))}
+                 rootClose={true}>
+          {addPagePopover}
+        </Overlay>
+        <a className={styles['add-page-link']}
+          ref={(inp) => (this.addPageButton = inp)}
+          onClick={() => (this.setState({'display': true}))}
+        > + Add new </a>
       </div>
     );
   }

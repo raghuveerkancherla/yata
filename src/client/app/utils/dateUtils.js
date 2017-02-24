@@ -2,8 +2,12 @@ import moment from 'moment';
 import chrono from 'chrono-node';
 import _ from 'lodash';
 
-
 function getDisplayDate(date) {
+  return date.format("D MMM");
+}
+
+
+function getDateSubtext(date) {
   const today = moment();
 
   const days_delta = date.diff(today, 'days', true);
@@ -14,7 +18,7 @@ function getDisplayDate(date) {
   } else if (0.9 < days_delta && days_delta < 1.9) {
     return 'tomorrow';
   } else {
-    return date.format("ddd, MMM Do");
+    return null;
   }
 }
 
@@ -56,4 +60,4 @@ function getWeekDaySuggestions(){
   return _.union(nextWeekDays, prevWeekDays);
 }
 
-export default {getDateKey, getDateFromNL, getWeekDaySuggestions, getDisplayDate};
+export default {getDateKey, getDateFromNL, getWeekDaySuggestions, getDateSubtext, getDisplayDate};

@@ -1,6 +1,9 @@
 import React, {PropTypes} from 'react';
 import TextareaAutosize from 'react-autosize-textarea';
-import styles from '../styles.less';
+import styles from './styles.less';
+import ClassNames from 'classnames/bind';
+
+var cx = ClassNames.bind(styles);
 
 var ContentItem = React.createClass({
   propTypes: {
@@ -9,8 +12,9 @@ var ContentItem = React.createClass({
     onDoubleEnter: PropTypes.func.isRequired,
     totalContentItems: PropTypes.number.isRequired,
 
+    shouldFocus:PropTypes.bool,
     id: PropTypes.string,
-    onClick: PropTypes.func,
+    onItemToggle: PropTypes.func,
     onEmptyBackspace: PropTypes.func,
     text: PropTypes.string,
     completed: PropTypes.bool,
@@ -24,28 +28,34 @@ var ContentItem = React.createClass({
     };
   },
 
+  componentDidMount: function(){
+    // this.textArea.focus();
+  },
+
   handleOnBlur: function (e) {
     this.props.onBlur(
       this.props.id,
       this.state.value,
-      this.state.completed
+      this.state.completed,
+
     );
   },
 
   handleToggle: function (e) {
     this.setState({'completed': !this.state.completed});
-    this.props.onClick(e);
+    this.props.onItemToggle && this.props.onItemToggle(e);
   },
 
   handleKeyDown: function (event) {
     const inputCharacterCode = event.keyCode;
-    const textContent = this.state.value;
+    const textContent = this.state.value || '';
     const cursorPosition = event.target.selectionEnd;
     const prevChar = textContent.charAt(cursorPosition-1); // 10 if it is \n
     const prevKeyCode = (prevChar == '\n' || prevChar == '\r' ? 13 : null);
 
     if (inputCharacterCode == 8 && textContent.length == 0 && this.props.id) {
       this.props.onEmptyBackspace(this.props.id);
+      event.preventDefault();
     }
 
     if ((prevKeyCode == inputCharacterCode) && (inputCharacterCode == 13)) {
@@ -64,14 +74,20 @@ var ContentItem = React.createClass({
       outline: 'none',
       border: 'none',
       resize: 'none'
-    }
+    };
+
+    let contentItemWrapperClass = cx(
+      {'content-item-wrapper': true,
+        'content-item-border': this.props.totalContentItems > 1}
+    );
 
     if (this.props.isVisible) {
       return (
-        <div className={this.props.totalContentItems >1 ? styles["content-item-wrapper"]: ''}>
+        <div className={contentItemWrapperClass}>
         <div className="row">
           <div className="col-xs-10">
             <TextareaAutosize
+              autoFocus={this.props.shouldFocus}
               style={textAreaStyle}
               ref={(input) => {this.textArea=input;}}
               value={this.state.value}

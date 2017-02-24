@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
-import { changeCurrentPage, addNewPage, changePageSwitcherVisibility } from '../actions';
-import PageListSidebarComponent from './PageListSideBarComponent';
+import { changeCurrentPage, addNewPage, changePageSwitcherVisibility  } from '../actions';
+import PageSwitcherModal from './PageSwitcherModal';
 
 const mapStateToProps = (state) => {
   return {
-    currentPage: state.currentPage,
-    customPages: state.customPages
+    customPages: state.customPages,
+    pageSwitcher: state.pageSwitcher
   };
 };
 
@@ -21,14 +21,17 @@ const mapDispatchToProps = (dispatch) => {
     },
     onShowPageSwitcher: () => {
       dispatch(changePageSwitcherVisibility(true));
+    },
+    onHidePageSwitcher: () => {
+      dispatch(changePageSwitcherVisibility(false));
     }
-
   };
 };
 
-const PageListSidebarContainer = connect(
+const PageSwitcherContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(PageListSidebarComponent);
+)(PageSwitcherModal);
 
-export default PageListSidebarContainer;
+export default PageSwitcherContainer;
+

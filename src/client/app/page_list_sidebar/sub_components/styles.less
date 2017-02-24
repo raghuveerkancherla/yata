@@ -1,0 +1,43 @@
+@lhc: 1.5rem;
+
+.date-sub-text{
+  font-size:small;
+  color: #bbb;
+
+}
+
+.bookmark-text{
+  color: #999;
+}
+
+.date-bookmark{
+  width: 100%;
+  padding-left: 0.4*@lhc;
+  min-height:3.2*@lhc;
+  display: flex;
+  align-items: center;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  margin-left: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overow: ellipsis;
+
+  &:hover{
+    cursor:pointer;
+    background-color: #eee;
+    text-decoration: none;
+  }
+}
+
+.add-page-link {
+  display: block;
+  padding: @lhc*0.8 0;
+  margin-left:0.5*@lhc;
+
+  &:hover{
+    cursor:pointer;
+    text-decoration: none;
+  }
+}

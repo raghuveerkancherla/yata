@@ -2,7 +2,7 @@ import Autosuggest from 'react-autosuggest';
 import React from 'react';
 import dateUtils from '../../utils/dateUtils';
 import _ from 'lodash';
-import styles from './styles.css';
+import AutoSuggestionStyles from './autosugestionstyles.less';
 
 const AutoSuggestPageInput = React.createClass({
   propTypes: {
@@ -82,7 +82,7 @@ const AutoSuggestPageInput = React.createClass({
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
 
-    return inputLength === 0 ? [] : suggestionList.filter(page =>
+    return inputLength === 0 ? suggestionList : suggestionList.filter(page =>
       page.pageKey.toLowerCase().indexOf(inputValue) > -1 ||
       page.displayName.toLowerCase().indexOf(inputValue) > -1
     );
@@ -102,14 +102,15 @@ const AutoSuggestPageInput = React.createClass({
     const { value, suggestions } = this.state;
     const inputProps = {
       id: 'page-autosuggest-input',
-      placeholder: 'Type anything',
+      placeholder: '',
       value,
-      onChange: this.onChange
+      onChange: this.onChange,
+      autoFocus: true
     };
 
     return (
       <Autosuggest
-        theme={styles}
+        theme={AutoSuggestionStyles}
         suggestions={suggestions}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
@@ -117,6 +118,7 @@ const AutoSuggestPageInput = React.createClass({
         getSuggestionValue={this.getSuggestionValue}
         renderSuggestion={this.renderSuggestion}
         inputProps={inputProps}
+        focusFirstSuggestion={true}
       />
     );
   }

@@ -5,8 +5,10 @@ import dateUtils from '../utils/dateUtils';
 import NumDaysToShow from './NumDaysToShow';
 import AddPageComponent from './sub_components/AddPageComponent';
 import PageLink from './sub_components/PageLink';
-import PageSearchComponent from './sub_components/PageSearcherComponent';
-import PageSwitcherModal from './sub_components/PageSwitcherModal';
+import styles from './styles.less';
+import ClassNames from 'classnames/bind';
+
+let cx = ClassNames.bind(styles);
 
 
 var PageListSidebarComponent = React.createClass({
@@ -14,7 +16,8 @@ var PageListSidebarComponent = React.createClass({
     currentPage: React.PropTypes.object.isRequired,
     customPages: React.PropTypes.array.isRequired,
     onPageChange: React.PropTypes.func.isRequired,
-    onAddPage: React.PropTypes.func.isRequired
+    onAddPage: React.PropTypes.func.isRequired,
+    onShowPageSwitcher: React.PropTypes.func.isRequired
   },
 
   render: function () {
@@ -23,38 +26,52 @@ var PageListSidebarComponent = React.createClass({
       return moment().add(days_delta, 'days');
       });
 
+
     return (
-      <div>
-        <PageSearchComponent
-          onPageChange={this.props.onPageChange}
-          customPages={this.props.customPages}
-        />
+
+      <div className={styles['sidebar-list-wrapper']}>
+        {/*<PageSearchComponent onPageChange={this.props.onPageChange} customPages={this.props.customPages}/>*/}
         {_.map(dates_to_display, (date_to_display) => {
-          return (<PageLink
-            key={dateUtils.getDateKey(date_to_display)}
-            onClick={this.props.onPageChange}
-            identifier={dateUtils.getDateKey(date_to_display)}
-            displayText={dateUtils.getDisplayDate(date_to_display)}
-            pageType="date"
-          />);
+          let bookmarkWrapperStyles = cx({
+            'date-bookmark-wrapper': true,
+            'current-bookmark-wrapper': dateUtils.getDateKey(date_to_display) == this.props.currentPage.page
+          });
+          return (
+            <div key={dateUtils.getDateKey(date_to_display)} className={bookmarkWrapperStyles}>
+              <PageLink
+                className={styles['date-bookmark']}
+                onClick={this.props.onPageChange}
+                identifier={dateUtils.getDateKey(date_to_display)}
+                displayText={dateUtils.getDisplayDate(date_to_display)}
+                displaySubText={dateUtils.getDateSubtext(date_to_display)}
+                pageType="date"
+              />
+            </div>
+            );
         })}
+        <div className={styles['page-switcher-wrapper']}>
+          <a className={styles['page-switcher']}
+             onClick={(e) => {this.props.onShowPageSwitcher()}}>
+            ...
+          </a>
+        </div>
         {_.map(this.props.customPages, (customPage) => {
-          return (<PageLink
-            key={customPage.pageKey}
-            onClick={this.props.onPageChange}
-            identifier={customPage.pageKey}
-            displayText={customPage.displayName}
-            pageType="custom"
-          />);
+          let bookmarkWrapperStyles = cx({
+            'custom-bookmark-wrapper': true,
+            'current-bookmark-wrapper': customPage.pageKey == this.props.currentPage.page
+          });
+          return (
+            <div key={customPage.pageKey} className={bookmarkWrapperStyles}>
+              <PageLink
+                onClick={this.props.onPageChange}
+                identifier={customPage.pageKey}
+                displayText={customPage.displayName}
+                pageType="custom"
+              />
+            </div>
+            );
         })}
-
         <AddPageComponent
-          onAddPage={this.props.onAddPage}
-        />
-
-        <PageSwitcherModal
-          onPageChange={this.props.onPageChange}
-          customPages={this.props.customPages}
           onAddPage={this.props.onAddPage}
         />
       </div>

@@ -27,7 +27,7 @@ var PageSearchComponent = React.createClass({
 
   render: function () {
     return (
-      <div>
+      <div className={styles['page-searcher']}>
         <form onSubmit={this.handlePageChangeSubmit}>
           <AutoSuggestPageInput
             ref={(input) => {this.pageNameElement=input;}}
