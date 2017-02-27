@@ -2,12 +2,13 @@ import React, {PropTypes} from 'react';
 import TextareaAutosize from 'react-autosize-textarea';
 import styles from './styles.less';
 import ClassNames from 'classnames/bind';
+import Mousetrap from 'mousetrap';
+
 
 var cx = ClassNames.bind(styles);
 
 var ContentItem = React.createClass({
   propTypes: {
-
     onBlur: PropTypes.func.isRequired,
     onDoubleEnter: PropTypes.func.isRequired,
     totalContentItems: PropTypes.number.isRequired,
@@ -28,42 +29,54 @@ var ContentItem = React.createClass({
     };
   },
 
-  componentDidMount: function(){
-    // this.textArea.focus();
+  componentDidMount: function () {
+    Mousetrap.bind(['enter enter'], this.handleDoubleEnter);
+    Mousetrap.bind('backspace', this.handleBackSpace);
+  },
+
+  componentWillUnmount: function () {
+    Mousetrap.unbind(['enter enter'], this.handleDoubleEnter);
+    Mousetrap.unbind('backspace', this.handleBackSpace);
+  },
+
+  handleDoubleEnter: function (event) {
+    if (event.preventDefault){
+      event.preventDefault();
+    } else {
+      // for ie;
+      event.returnValue = false;
+    }
+    const textContent = this.state.value || '';
+    const cursorPosition = event.target.selectionEnd;
+    var contentBeforeCursor = textContent.substring(0, cursorPosition-1);
+    var contentAfterCursor = textContent.substring(cursorPosition, textContent.length);
+    this.props.onDoubleEnter(this, contentBeforeCursor, contentAfterCursor);
+  },
+
+  handleBackSpace: function (event) {
+    const textContent = this.state.value || '';
+    if (textContent.length == 0) {
+      this.props.onEmptyBackspace(this.props.id);
+      if (event.preventDefault){
+        event.preventDefault();
+      } else {
+        // for ie;
+        event.returnValue = false;
+      }
+    }
   },
 
   handleOnBlur: function (e) {
     this.props.onBlur(
       this.props.id,
       this.state.value,
-      this.state.completed,
-
+      this.state.completed
     );
   },
 
   handleToggle: function (e) {
     this.setState({'completed': !this.state.completed});
     this.props.onItemToggle && this.props.onItemToggle(e);
-  },
-
-  handleKeyDown: function (event) {
-    const inputCharacterCode = event.keyCode;
-    const textContent = this.state.value || '';
-    const cursorPosition = event.target.selectionEnd;
-    const prevChar = textContent.charAt(cursorPosition-1); // 10 if it is \n
-    const prevKeyCode = (prevChar == '\n' || prevChar == '\r' ? 13 : null);
-
-    if (inputCharacterCode == 8 && textContent.length == 0 && this.props.id) {
-      this.props.onEmptyBackspace(this.props.id);
-      event.preventDefault();
-    }
-
-    if ((prevKeyCode == inputCharacterCode) && (inputCharacterCode == 13)) {
-      var contentBeforeCursor = textContent.substring(0, cursorPosition-1);
-      var contentAfterCursor = textContent.substring(cursorPosition, textContent.length);
-      this.props.onDoubleEnter(this, contentBeforeCursor, contentAfterCursor);
-      event.preventDefault();
-    }
   },
 
   render: function () {
@@ -89,6 +102,7 @@ var ContentItem = React.createClass({
             <TextareaAutosize
               autoFocus={this.props.shouldFocus}
               style={textAreaStyle}
+              className="mousetrap"
               ref={(input) => {this.textArea=input;}}
               value={this.state.value}
               placeholder="Add a todo..."
