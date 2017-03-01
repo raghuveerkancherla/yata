@@ -74,9 +74,10 @@ const AutoSuggestPageInput = React.createClass({
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
 
-    return inputLength === 0 ? []: suggestionList.filter(page =>
-        page.pageKey.toLowerCase().indexOf(inputValue) > -1 ||
-        page.displayName.toLowerCase().indexOf(inputValue) > -1
+    return inputLength === 0 ? []: suggestionList.filter(suggestion =>
+        suggestion.pageKey.toLowerCase().indexOf(inputValue) > -1 ||
+        suggestion.displayName.toLowerCase().indexOf(inputValue) > -1 ||
+        suggestion.searchText.toLowerCase().indexOf(inputValue) > -1
       );
   },
 
@@ -88,7 +89,8 @@ const AutoSuggestPageInput = React.createClass({
         'pageKey': dateUtils.getDateKey(nlDate),
         'displayName': dateUtils.getDisplayDate(nlDate),
         'date': nlDate,
-        'pageType': 'date'
+        'pageType': 'date',
+        'searchText': userInput
       }];
     } else {
       return [];
@@ -128,7 +130,6 @@ const AutoSuggestPageInput = React.createClass({
         getSuggestionValue={this.getSuggestionValue}
         renderSuggestion={this.renderSuggestion}
         inputProps={inputProps}
-        focusFirstSuggestion={true}
         alwaysRenderSuggestions={true}
       />
     );
