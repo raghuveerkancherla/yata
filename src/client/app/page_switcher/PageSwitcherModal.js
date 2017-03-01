@@ -11,12 +11,14 @@ var PageSwitcherModal = React.createClass({
     onAddPage: React.PropTypes.func,
     onShowPageSwitcher: React.PropTypes.func,
     onHidePageSwitcher: React.PropTypes.func,
-    pageSwitcher: React.PropTypes.object
+    pageSwitcher: React.PropTypes.object,
+    currentPage: React.PropTypes.object
   },
 
   getInitialState: function () {
     return {
-      pageKey: null, pageType: null
+      pageKey: null,
+      pageType: null
     };
   },
 
@@ -27,7 +29,6 @@ var PageSwitcherModal = React.createClass({
 
   componentWillUnmount: function () {
     Mousetrap.unbindGlobal(['command+k'], this.open);
-
   },
 
   open: function() {
@@ -42,8 +43,7 @@ var PageSwitcherModal = React.createClass({
     e.preventDefault();
     var matchedSuggestion = this.pageNameElement.state.matchedSuggestion;
     var userChoseAdd = this.pageNameElement.state.userChoseAddPage;
-
-    if (!userChoseAdd && matchedSuggestion == null){
+    if (!userChoseAdd && matchedSuggestion == null) {
       this.setState({pageNotFoundVisibility: 'visible'});
     } else {
       var pageName = this.pageNameElement.state.value;
@@ -51,11 +51,13 @@ var PageSwitcherModal = React.createClass({
       var pageType = matchedSuggestion ? matchedSuggestion.pageType : 'custom';
       this.close();
       this.setState({pageKey: pageKey, pageType: pageType});
+
     }
   },
 
   changePage: function () {
-    if (this.state.pageKey && this.state.pageType){
+    if (this.state.pageKey && this.state.pageType &&
+        this.state.pageKey != this.props.currentPage.page){
       this.props.onPageChange(this.state.pageKey, this.state.pageType);
     }
   },

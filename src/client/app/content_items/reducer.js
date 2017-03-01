@@ -68,8 +68,7 @@ const contentItems = (state = [], action) => {
         } else {
           return null;
         }
-      }), (item) => {return !_.isNull(item)});
-
+      }), (item) => {return !_.isNull(item);});
 
     default:
       return state;

@@ -1,17 +1,29 @@
-.yata-row-wrapper{
-    max-width: 800px;
-    margin: 0 auto;
+@lhc: 1.5rem;
+
+.yata-row-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .left-col-content {
-    height:100%;
-    border-right: 1px solid #ddd;
+  height: 100%;
+  border-right: 1px solid #ddd;
+  position: relative;
 }
 
-.filter-nav{
-    color: #888;
+.delete-page-wrapper {
+  position: absolute;
+  bottom: 0;
+  padding-bottom: @lhc;
+  width: 100%;
+  text-align: right;
+  padding-right: 15px + 5*@lhc;
+}
 
-    &:hover{
-        color: #333;
-    }
+.filter-nav {
+  color: #888;
+
+  &:hover {
+    color: #333;
+  }
 }

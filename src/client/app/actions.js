@@ -15,6 +15,14 @@ export const addNewPage = (pageName) => {
   };
 };
 
+export const deletePage = (pageKey, nextPageKey) => {
+  return {
+    type: 'DELETE_PAGE',
+    pageKey,
+    nextPageKey
+  };
+};
+
 export const addContentItem = (text, currentPage, status, afterObjId) => {
   return {
     type: 'ADD_TODO',

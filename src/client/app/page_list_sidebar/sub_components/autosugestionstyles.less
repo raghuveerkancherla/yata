@@ -20,10 +20,14 @@
 .container--open .input {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+  overflow: hidden;
 }
 
 .suggestions-container {
   margin-top: @lhc;
+  height: @lhc * 10;
+  overflow-y: scroll;
+  -webkit-appearance: none;
 }
 
 .container--open .suggestions-container {

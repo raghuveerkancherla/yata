@@ -20,7 +20,6 @@ const AutoSuggestPageInput = React.createClass({
   },
 
   onChange: function(event, { newValue, method }) {
-
     if (newValue != 'AddPage' && method == 'type') {
       this.setState({
         value: newValue
@@ -29,41 +28,30 @@ const AutoSuggestPageInput = React.createClass({
   },
 
   onSuggestionsFetchRequested: function({ value }) {
-    var suggestionList = _.union(
-      this.props.customPages,
-      dateUtils.getWeekDaySuggestions()
-    );
-
-    var nlDate = dateUtils.getDateFromNL(value);
-
-    if (nlDate != null) {
-      suggestionList = _.union(
-        suggestionList,
-        [{'pageKey': dateUtils.getDateKey(nlDate),
-          'displayName': dateUtils.getDisplayDate(nlDate),
-          'date': nlDate,
-          'pageType': 'date'
-        }]
+    var suggestionsToShow;
+    if (value.length == 0) {
+      // get default suggestions to show
+      suggestionsToShow = _.union(
+        this.props.customPages,
+        dateUtils.getDefaultDateSuggestions());
+    } else {
+      var suggestionList = _.union(
+        this.props.customPages,
+        dateUtils.getWeekDaySuggestions(),
+        this._getDateSuggestions(value)
       );
+      const filteredSuggestions = this._filterSuggestionsByValue(value, suggestionList);
+      suggestionsToShow = _.union(filteredSuggestions, this._getAddPageSuggestion());
     }
 
-    var suggestions = this.getSuggestions(value, suggestionList);
-    var addPageSuggestion =[{
-      'pageKey': 'AddPage',
-      'displayName': 'Add new page'
-    }];
-
     this.setState({
-      suggestions: _.union(suggestions, addPageSuggestion)
+      suggestions: suggestionsToShow
     });
   },
 
   onSuggestionsClearRequested: function () {
     this.setState({
-      suggestions: [{
-        'pageKey': 'AddPage',
-        'displayName': 'Add new page'
-      }]
+      suggestions: this._getAddPageSuggestion()
     });
   },
 
@@ -78,18 +66,40 @@ const AutoSuggestPageInput = React.createClass({
     }
   },
 
-  getSuggestions: function(value, suggestionList) {
+  getSuggestionValue: function(suggestion) {
+    return suggestion.pageKey;
+  },
+
+  _filterSuggestionsByValue: function (value, suggestionList) {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
 
-    return inputLength === 0 ? suggestionList : suggestionList.filter(page =>
-      page.pageKey.toLowerCase().indexOf(inputValue) > -1 ||
-      page.displayName.toLowerCase().indexOf(inputValue) > -1
-    );
+    return inputLength === 0 ? []: suggestionList.filter(page =>
+        page.pageKey.toLowerCase().indexOf(inputValue) > -1 ||
+        page.displayName.toLowerCase().indexOf(inputValue) > -1
+      );
   },
 
-  getSuggestionValue: function(suggestion) {
-    return suggestion.pageKey;
+  _getDateSuggestions: function (userInput) {
+    var nlDate = dateUtils.getDateFromNL(userInput);
+
+    if (nlDate != null) {
+      return [{
+        'pageKey': dateUtils.getDateKey(nlDate),
+        'displayName': dateUtils.getDisplayDate(nlDate),
+        'date': nlDate,
+        'pageType': 'date'
+      }];
+    } else {
+      return [];
+    }
+  },
+
+  _getAddPageSuggestion: function () {
+    return [{
+      'pageKey': 'AddPage',
+      'displayName': 'Add new page'
+    }];
   },
 
   renderSuggestion: function (suggestion) {
@@ -119,6 +129,7 @@ const AutoSuggestPageInput = React.createClass({
         renderSuggestion={this.renderSuggestion}
         inputProps={inputProps}
         focusFirstSuggestion={true}
+        alwaysRenderSuggestions={true}
       />
     );
   }

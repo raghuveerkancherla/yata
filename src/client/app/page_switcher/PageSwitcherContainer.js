@@ -5,7 +5,8 @@ import PageSwitcherModal from './PageSwitcherModal';
 const mapStateToProps = (state) => {
   return {
     customPages: state.customPages,
-    pageSwitcher: state.pageSwitcher
+    pageSwitcher: state.pageSwitcher,
+    currentPage: state.currentPage
   };
 };
 

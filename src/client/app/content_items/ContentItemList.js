@@ -27,10 +27,17 @@ var ContentItemList = React.createClass({
   },
 
   handleRemoveItem: function (idToRemove) {
-
+    debugger;
     const indexToRemove = _.findIndex(
       this.props.contentItems, (ci) => {return ci.id == idToRemove;});
-    const idToFocusNext = indexToRemove > -1 ? this.props.contentItems[indexToRemove-1].id : null;
+    var idToFocusNext;
+    if (indexToRemove == -1){
+      idToFocusNext = null;
+    } else if (indexToRemove == 0) {
+      idToFocusNext = 0;
+    } else {
+      idToFocusNext = indexToRemove -1;
+    }
     this.props.onRemoveContentItem(idToRemove, idToFocusNext);
   },
 
@@ -50,6 +57,7 @@ var ContentItemList = React.createClass({
 
   render: function () {
     const numContentItems = this.props.contentItems.length;
+    console.log(numContentItems);
     const itemToFocus = _.find(this.props.contentItems, (ci) => {return ci.isFocused;}) ||
       _.last(this.props.contentItems);
     const itemIDToFocus = itemToFocus && itemToFocus.id;
@@ -79,7 +87,8 @@ var ContentItemList = React.createClass({
               onDoubleEnter={this.handleDoubleEnterOnItem}
               onEmptyBackspace={this.handleRemoveItem}
               onBlur={this.handleItemContentOnBlur}
-              {...contentItem}
+              text={contentItem.text}
+              completed={contentItem.completed}
               onItemToggle={() => this.props.onContentItemToggle(contentItem.id)}
               onShowPageSwitcher={this.props.onShowPageSwitcher}
               onHidePageSwitcher={this.props.onHidePageSwitcher}
@@ -91,11 +100,6 @@ var ContentItemList = React.createClass({
             use &crarr; &crarr; to add another todo
           </span>
         </div>
-
-        {/*<button onClick={() => this.props.onAddContentItem('', this.props.currentPage)}>*/}
-          {/*Add (start with removing this)*/}
-        {/*</button>*/}
-
       </div>
 
     );

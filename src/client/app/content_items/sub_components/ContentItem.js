@@ -23,6 +23,10 @@ var ContentItem = React.createClass({
   },
 
   getInitialState: function () {
+    console.log('initial state', {
+      completed: this.props.completed || false,
+      value: this.props.text
+    });
     return {
       completed: this.props.completed || false,
       value: this.props.text
@@ -55,6 +59,7 @@ var ContentItem = React.createClass({
 
   handleBackSpace: function (event) {
     const textContent = this.state.value || '';
+    console.log('backspace ', textContent);
     if (textContent.length == 0) {
       this.props.onEmptyBackspace(this.props.id);
       if (event.preventDefault){

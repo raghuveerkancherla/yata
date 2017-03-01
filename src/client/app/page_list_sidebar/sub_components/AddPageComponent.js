@@ -40,12 +40,12 @@ var AddPageComponent = React.createClass({
       <div>
         <Overlay placement="bottom" show={this.state.display}
                  onHide={() => {this.setState({'display': false});}}
-                 target={() => (ReactDOM.findDOMNode(this.addPageButton))}
+                 target={() => (ReactDOM.findDOMNode(this.deletePageButton))}
                  rootClose={true}>
           {addPagePopover}
         </Overlay>
         <a className={styles['add-page-link']}
-          ref={(inp) => (this.addPageButton = inp)}
+          ref={(inp) => (this.deletePageButton = inp)}
           onClick={() => (this.setState({'display': true}))}
         > + Add new </a>
       </div>

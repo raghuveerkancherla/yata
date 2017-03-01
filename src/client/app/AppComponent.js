@@ -5,14 +5,13 @@ import VisibleContentItemContainer from './content_items/VisibleContentItemConta
 import styles from './styles.less';
 import ClassNames from 'classnames/bind';
 import PageSwitcherContainer from './page_switcher/PageSwitcherContainer';
+import DeletePageContainer from './delete_page/DeletePageContainer';
 
 let cx = ClassNames.bind(styles);
-let leftColContent = cx('col-xs-10', 'left-col-content');
-
 
 var AppComponent = React.createClass({
-
   render: function () {
+    let leftColContent = cx('col-xs-10', 'left-col-content');
     return (
       <div>
         <div className="container">
@@ -21,6 +20,9 @@ var AppComponent = React.createClass({
               <div className={leftColContent}>
                 <Filters/>
                 <VisibleContentItemContainer/>
+                <div className={styles['delete-page-wrapper']}>
+                  <DeletePageContainer/>
+                </div>
               </div>
               <div className="col-xs-2">
                 <PageListSidebarContainer />

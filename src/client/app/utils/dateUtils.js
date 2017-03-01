@@ -1,63 +1,91 @@
 import moment from 'moment';
 import chrono from 'chrono-node';
 import _ from 'lodash';
+import getDateSubtext from './dateSubTextGenerator';
 
 function getDisplayDate(date) {
   return date.format("D MMM");
-}
-
-
-function getDateSubtext(date) {
-  const today = moment();
-
-  const days_delta = date.diff(today, 'days', true);
-  if (-2 < days_delta && days_delta <= -1) {
-    return 'yesterday';
-  } else if (-1 < days_delta && days_delta < 0.9) {
-    return 'today';
-  } else if (0.9 < days_delta && days_delta < 1.9) {
-    return 'tomorrow';
-  } else {
-    return null;
-  }
 }
 
 function getDateKey(date) {
   return date.format("YYYY/MM/DD");
 }
 
+
 function getDateFromNL(userInput){
   var date = chrono.parseDate(userInput);
   return date != null ? moment(date) : null;
 }
 
-function getWeekDaySuggestions(){
-  var nextMondayDate = new Date();
-  nextMondayDate.setDate(nextMondayDate.getDate() + (7-nextMondayDate.getDay())%7+1);
-  var nextMonday = moment(nextMondayDate);
+function getDefaultDateSuggestions() {
+  const today = moment();
+  const tomorrow = moment().add(1, 'days');
+  const twoDaysFromNow = moment().add(2, 'days');
+  const nextWeekSameDay = moment().add(7, 'days');
+  const nextMondayDelta = 7 - moment().day() + 1;
+  const nextMonday = moment().add(nextMondayDelta, 'days');
 
-  var nextWeekDays = _.map(_.range(0,7,1), function (delta) {
-    var date = nextMonday.clone();
-    date.add(delta, 'days');
+  let suggestionDates = _.uniq([today, tomorrow, twoDaysFromNow, nextMonday, nextWeekSameDay]);
+  const suggestions = _.map(suggestionDates, (date) => {
+    let dateSubText = getDateSubtext(date, 'SEARCH_SUGGESTIONS');
     return {
       pageKey: getDateKey(date),
-      displayName: 'Next '.concat(date.format('dddd')),
       date: date,
-      pageType: 'date'
+      pageType: 'date',
+      displayName: dateSubText,
+      searchText: date.format('dddd') + ' ' + (dateSubText || '')
     };
   });
-  var prevWeekDays = _.map(_.range(1,8,1), function (delta) {
-    var date = nextMonday.clone();
-    date.add(-1*delta, 'days');
-
-    return {
-      pageKey: getDateKey(date),
-      displayName: 'Prev '.concat(date.format('dddd')),
-      date: date
-    };
-  });
-
-  return _.union(nextWeekDays, prevWeekDays);
+  return suggestions;
 }
 
-export default {getDateKey, getDateFromNL, getWeekDaySuggestions, getDateSubtext, getDisplayDate};
+function getWeekDaySuggestions() {
+  const nextMondayDelta = 7 - moment().day() + 1;
+  const thisMondayDelta = 1 - moment().day();
+  const lastMondayDelta = 1 - moment().day() - 7;
+  const nextMonday = moment().add(nextMondayDelta, 'days');
+  const thisMonday = moment().add(thisMondayDelta, 'days');
+  const lastMonday = moment().add(lastMondayDelta, 'days');
+
+  let thisWeekDays = _.map(_.range(0,6,1), function (delta) {
+    var date = thisMonday.clone();
+    date.add(delta, 'days');
+    let dateSubText = getDateSubtext(date, 'SEARCH_SUGGESTIONS')
+    return {
+      pageKey: getDateKey(date),
+      displayName: dateSubText,
+      date: date,
+      pageType: 'date',
+      searchText: date.format('dddd') + ' ' + (dateSubText || '')
+    };
+  });
+
+  let nextWeekDays = _.map(_.range(0,6,1), function (delta) {
+    var date = nextMonday.clone();
+    date.add(delta, 'days');
+    let dateSubText = getDateSubtext(date, 'SEARCH_SUGGESTIONS');
+    return {
+      pageKey: getDateKey(date),
+      displayName: dateSubText,
+      date: date,
+      pageType: 'date',
+      searchText: date.format('dddd') + ' ' + (dateSubText || '')
+    };
+  });
+  let prevWeekDays = _.map(_.range(0,6,1), function (delta) {
+    var date = lastMonday.clone();
+    date.add(delta, 'days');
+    let dateSubText = getDateSubtext(date, 'SEARCH_SUGGESTIONS');
+    return {
+      pageKey: getDateKey(date),
+      displayName: dateSubText,
+      date: date,
+      pageType: 'date',
+      searchText: 'prev previous last week ' + date.format('dddd') + ' ' + dateSubText
+    };
+  });
+  return _.union(thisWeekDays, nextWeekDays, prevWeekDays);
+}
+
+export default {getDateKey, getDateFromNL,
+  getWeekDaySuggestions, getDateSubtext, getDisplayDate, getDefaultDateSuggestions};
