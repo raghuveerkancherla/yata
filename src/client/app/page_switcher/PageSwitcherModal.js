@@ -49,9 +49,11 @@ var PageSwitcherModal = React.createClass({
       var pageName = this.pageNameElement.state.value;
       var pageKey = matchedSuggestion ? matchedSuggestion.pageKey : pageName;
       var pageType = matchedSuggestion ? matchedSuggestion.pageType : 'custom';
-      this.close();
+      if (userChoseAdd) {
+        this.props.onAddPage(pageName);
+      }
+      this.close(); //page change will occur automatically after close
       this.setState({pageKey: pageKey, pageType: pageType});
-
     }
   },
 
@@ -72,7 +74,6 @@ var PageSwitcherModal = React.createClass({
               <AutoSuggestPageInput
                 ref={(input) => {this.pageNameElement=input;}}
                 customPages={this.props.customPages}
-                onAddPage={this.props.onAddPage}
               />
             </form>
           </div>

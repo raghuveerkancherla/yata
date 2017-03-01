@@ -21,14 +21,16 @@ var PageListSidebarComponent = React.createClass({
   },
 
   render: function () {
+    const page = this.props.currentPage;
+    const dateToStart = page.pageType == 'date'?
+      moment(page.page) : moment();
+
     var dates_to_display = _.map(_.range(
       -1*NumDaysToShow.backward, NumDaysToShow.forward+1,1), (days_delta) => {
-      return moment().add(days_delta, 'days');
+      return dateToStart.clone().add(days_delta, 'days');
       });
 
-
     return (
-
       <div className={styles['sidebar-list-wrapper']}>
         {/*<PageSearchComponent onPageChange={this.props.onPageChange} customPages={this.props.customPages}/>*/}
         {_.map(dates_to_display, (date_to_display) => {

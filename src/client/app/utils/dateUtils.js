@@ -12,9 +12,20 @@ function getDateKey(date) {
 }
 
 
-function getDateFromNL(userInput){
+function getDateSuggestionsFromNL(userInput){
   var date = chrono.parseDate(userInput);
-  return date != null ? moment(date) : null;
+  if (date == null) {
+    return [];
+  } else {
+    const mDate = moment(date);
+    return [{
+      'pageKey': getDateKey(mDate),
+      'displayName': getDisplayDate(mDate),
+      'date': moment(date),
+      'pageType': 'date',
+      'searchText': userInput
+    }];
+  }
 }
 
 function getDefaultDateSuggestions() {
@@ -87,5 +98,5 @@ function getWeekDaySuggestions() {
   return _.union(thisWeekDays, nextWeekDays, prevWeekDays);
 }
 
-export default {getDateKey, getDateFromNL,
+export default {getDateKey, getDateSuggestionsFromNL,
   getWeekDaySuggestions, getDateSubtext, getDisplayDate, getDefaultDateSuggestions};

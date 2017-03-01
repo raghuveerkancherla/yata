@@ -7,7 +7,6 @@ import AutoSuggestionStyles from './autosugestionstyles.less';
 const AutoSuggestPageInput = React.createClass({
   propTypes: {
     customPages: React.PropTypes.array,
-    onAddPage: React.PropTypes.func
   },
 
   getInitialState: function () {
@@ -38,7 +37,7 @@ const AutoSuggestPageInput = React.createClass({
       var suggestionList = _.union(
         this.props.customPages,
         dateUtils.getWeekDaySuggestions(),
-        this._getDateSuggestions(value)
+        dateUtils.getDateSuggestionsFromNL(value)
       );
       const filteredSuggestions = this._filterSuggestionsByValue(value, suggestionList);
       suggestionsToShow = _.union(filteredSuggestions, this._getAddPageSuggestion());
@@ -57,7 +56,6 @@ const AutoSuggestPageInput = React.createClass({
 
   onSuggestionSelected: function (e, {suggestion, suggestionValue, suggestionIndex, sectionIndex, method}) {
     if (suggestion.pageKey == 'AddPage'){
-      this.props.onAddPage(this.state.value, 'custom');
       this.setState({userChoseAddPage: true});
     } else {
       this.setState({
@@ -77,30 +75,14 @@ const AutoSuggestPageInput = React.createClass({
     return inputLength === 0 ? []: suggestionList.filter(suggestion =>
         suggestion.pageKey.toLowerCase().indexOf(inputValue) > -1 ||
         suggestion.displayName.toLowerCase().indexOf(inputValue) > -1 ||
-        suggestion.searchText.toLowerCase().indexOf(inputValue) > -1
+        suggestion.searchText && suggestion.searchText.toLowerCase().indexOf(inputValue) > -1
       );
-  },
-
-  _getDateSuggestions: function (userInput) {
-    var nlDate = dateUtils.getDateFromNL(userInput);
-
-    if (nlDate != null) {
-      return [{
-        'pageKey': dateUtils.getDateKey(nlDate),
-        'displayName': dateUtils.getDisplayDate(nlDate),
-        'date': nlDate,
-        'pageType': 'date',
-        'searchText': userInput
-      }];
-    } else {
-      return [];
-    }
   },
 
   _getAddPageSuggestion: function () {
     return [{
       'pageKey': 'AddPage',
-      'displayName': 'Add new page'
+      'displayName': '+ Add new page'
     }];
   },
 
