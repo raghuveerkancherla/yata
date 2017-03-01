@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react';
+import ReactDOM from 'react-dom';
 import TextareaAutosize from 'react-autosize-textarea';
 import styles from './styles.less';
 import ClassNames from 'classnames/bind';
@@ -23,28 +24,29 @@ var ContentItem = React.createClass({
   },
 
   getInitialState: function () {
-    console.log('initial state', {
-      completed: this.props.completed || false,
-      value: this.props.text
-    });
     return {
       completed: this.props.completed || false,
-      value: this.props.text
+      value: this.props.text,
+      shouldAutoFocus: this.props.shouldFocus
     };
   },
 
   componentDidMount: function () {
-    Mousetrap.bind(['enter enter'], this.handleDoubleEnter);
-    Mousetrap.bind('backspace', this.handleBackSpace);
+    let thisDomObj = ReactDOM.findDOMNode(this);
+    this.mousetrap = new Mousetrap(thisDomObj);
+    this.mousetrap.bind(['enter enter'], this.handleDoubleEnter);
+    this.mousetrap.bind('backspace', this.handleBackSpace);
   },
 
   componentWillUnmount: function () {
-    Mousetrap.unbind(['enter enter'], this.handleDoubleEnter);
-    Mousetrap.unbind('backspace', this.handleBackSpace);
+    this.mousetrap.unbind(['enter enter'], this.handleDoubleEnter);
+    this.mousetrap.unbind('backspace', this.handleBackSpace);
   },
 
   handleDoubleEnter: function (event) {
-    if (event.preventDefault){
+    //ensure same key bindings on other text areas dont get called
+    event.stopPropagation();
+    if (event.preventDefault) {
       event.preventDefault();
     } else {
       // for ie;
@@ -58,9 +60,9 @@ var ContentItem = React.createClass({
   },
 
   handleBackSpace: function (event) {
+    event.stopPropagation();
     const textContent = this.state.value || '';
-    console.log('backspace ', textContent);
-    if (textContent.length == 0) {
+    if (textContent.length == 0 && this.props.id) {
       this.props.onEmptyBackspace(this.props.id);
       if (event.preventDefault){
         event.preventDefault();
@@ -105,7 +107,7 @@ var ContentItem = React.createClass({
         <div className="row">
           <div className="col-xs-10">
             <TextareaAutosize
-              autoFocus={this.props.shouldFocus}
+              autoFocus={this.state.shouldAutoFocus}
               style={textAreaStyle}
               className="mousetrap"
               ref={(input) => {this.textArea=input;}}

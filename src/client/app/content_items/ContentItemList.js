@@ -27,17 +27,18 @@ var ContentItemList = React.createClass({
   },
 
   handleRemoveItem: function (idToRemove) {
-    debugger;
     const indexToRemove = _.findIndex(
       this.props.contentItems, (ci) => {return ci.id == idToRemove;});
-    var idToFocusNext;
+    var indexToFocusNext;
     if (indexToRemove == -1){
-      idToFocusNext = null;
+      indexToFocusNext = null;
     } else if (indexToRemove == 0) {
-      idToFocusNext = 0;
+      indexToFocusNext = 1;
     } else {
-      idToFocusNext = indexToRemove -1;
+      indexToFocusNext = indexToRemove -1;
     }
+    const idToFocusNext = indexToFocusNext == null ? null :
+      this.props.contentItems[indexToFocusNext].id;
     this.props.onRemoveContentItem(idToRemove, idToFocusNext);
   },
 
@@ -87,8 +88,7 @@ var ContentItemList = React.createClass({
               onDoubleEnter={this.handleDoubleEnterOnItem}
               onEmptyBackspace={this.handleRemoveItem}
               onBlur={this.handleItemContentOnBlur}
-              text={contentItem.text}
-              completed={contentItem.completed}
+              {...contentItem}
               onItemToggle={() => this.props.onContentItemToggle(contentItem.id)}
               onShowPageSwitcher={this.props.onShowPageSwitcher}
               onHidePageSwitcher={this.props.onHidePageSwitcher}
