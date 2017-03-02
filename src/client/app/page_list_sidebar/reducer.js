@@ -2,25 +2,23 @@ import dateUtil from '../utils/dateUtils';
 import moment from 'moment';
 import _ from 'lodash';
 
+
 function currentPage(state, action) {
   const pageForToday = {
     page: dateUtil.getDateKey(moment()),
-    pageType: 'date'
+    pageType: 'date',
+    anchorDate: dateUtil.getDateKey(moment())
   };
   switch (action.type) {
     case 'CHANGE_PAGE':
-      return {
+      return Object.assign({}, state, {
         page: action.pageKey,
-        pageType: action.pageType};
-    case 'DELETE_PAGE':
-      if (action.nextPageKey != null){
-        return {
-          page: action.nextPageKey,
-          pageType: 'custom'
-        };
-      } else {
-        return pageForToday;
-      }
+        pageType: action.pageType
+      });
+    case 'CHANGE_ANCHOR_DATE':
+      return Object.assign({}, state, {
+        anchorDate: action.anchorDate || dateUtil.getDateKey(moment())
+      });
     default:
       return Object.assign({},  pageForToday, state);
   }

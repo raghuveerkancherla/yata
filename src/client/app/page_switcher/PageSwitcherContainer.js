@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
-import { changeCurrentPage, addNewPage, changePageSwitcherVisibility  } from '../actions';
+import { changeCurrentPage, addNewPage,
+  changePageSwitcherVisibility, changeAnchorDate  } from '../actions';
 import PageSwitcherModal from './PageSwitcherModal';
 
 const mapStateToProps = (state) => {
@@ -12,8 +13,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onPageChange: (pageKey, pageType) => {
+    onPageChangeBySearch: (pageKey, pageType) => {
       dispatch(changeCurrentPage(pageKey, pageType));
+      if (pageType == 'date') {
+        dispatch(changeAnchorDate(pageKey));
+      }
     },
     onAddPage: (pageName) => {
       dispatch(addNewPage(pageName));

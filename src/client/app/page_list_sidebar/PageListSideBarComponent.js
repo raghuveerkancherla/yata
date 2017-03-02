@@ -22,24 +22,23 @@ var PageListSidebarComponent = React.createClass({
 
   render: function () {
     const page = this.props.currentPage;
-    const dateToStart = page.pageType == 'date'?
-      moment(page.page) : moment();
+    var anchorDate = moment(page.anchorDate);
 
     var dates_to_display = _.map(_.range(
       -1*NumDaysToShow.backward, NumDaysToShow.forward+1,1), (days_delta) => {
-      return dateToStart.clone().add(days_delta, 'days');
+      return anchorDate.clone().add(days_delta, 'days');
       });
 
     return (
       <div className={styles['sidebar-list-wrapper']}>
-        {/*<PageSearchComponent onPageChange={this.props.onPageChange} customPages={this.props.customPages}/>*/}
         {_.map(dates_to_display, (date_to_display) => {
           let bookmarkWrapperStyles = cx({
             'date-bookmark-wrapper': true,
             'current-bookmark-wrapper': dateUtils.getDateKey(date_to_display) == this.props.currentPage.page
           });
           return (
-            <div key={dateUtils.getDateKey(date_to_display)} className={bookmarkWrapperStyles}>
+            <div key={dateUtils.getDateKey(date_to_display)}
+                 className={bookmarkWrapperStyles}>
               <PageLink
                 className={styles['date-bookmark']}
                 onClick={this.props.onPageChange}

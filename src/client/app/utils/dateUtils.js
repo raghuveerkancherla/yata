@@ -8,7 +8,7 @@ function getDisplayDate(date) {
 }
 
 function getDateKey(date) {
-  return date.format("YYYY/MM/DD");
+  return date.format("YYYY-MM-DD");
 }
 
 function getStartOfToday() {
@@ -16,6 +16,7 @@ function getStartOfToday() {
 }
 
 function getDateSuggestionsFromNL(userInput){
+  console.log('am here to get date suggestions from NL');
   var date = chrono.parseDate(userInput);
   if (date == null) {
     return [];
@@ -24,7 +25,7 @@ function getDateSuggestionsFromNL(userInput){
     return [{
       'pageKey': getDateKey(mDate),
       'displayName': getDisplayDate(mDate),
-      'date': moment(date),
+      'date': mDate,
       'pageType': 'date',
       'searchText': userInput
     }];

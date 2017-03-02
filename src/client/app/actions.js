@@ -2,8 +2,15 @@
 export const changeCurrentPage = (pageKey, pageType) => {
   return {
     type: 'CHANGE_PAGE',
-    pageKey: pageKey,
-    pageType: pageType
+    pageKey,
+    pageType
+  };
+};
+
+export const changeAnchorDate = (anchorDate) => {
+  return {
+    type: 'CHANGE_ANCHOR_DATE',
+    anchorDate
   };
 };
 
@@ -15,11 +22,10 @@ export const addNewPage = (pageName) => {
   };
 };
 
-export const deletePage = (pageKey, nextPageKey) => {
+export const deletePage = (pageKey) => {
   return {
     type: 'DELETE_PAGE',
-    pageKey,
-    nextPageKey
+    pageKey
   };
 };
 

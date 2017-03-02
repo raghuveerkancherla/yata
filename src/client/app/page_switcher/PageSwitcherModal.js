@@ -6,7 +6,7 @@ import styles from './styles.less';
 
 var PageSwitcherModal = React.createClass({
   propTypes: {
-    onPageChange: React.PropTypes.func,
+    onPageChangeBySearch: React.PropTypes.func,
     customPages: React.PropTypes.array,
     onAddPage: React.PropTypes.func,
     onShowPageSwitcher: React.PropTypes.func,
@@ -52,15 +52,16 @@ var PageSwitcherModal = React.createClass({
       if (userChoseAdd) {
         this.props.onAddPage(pageName);
       }
-      this.close(); //page change will occur automatically after close
       this.setState({pageKey: pageKey, pageType: pageType});
+      this.close(); //page change will occur automatically after modal exits
     }
   },
 
   changePage: function () {
     if (this.state.pageKey && this.state.pageType &&
         this.state.pageKey != this.props.currentPage.page){
-      this.props.onPageChange(this.state.pageKey, this.state.pageType);
+      this.props.onPageChangeBySearch(
+        this.state.pageKey, this.state.pageType);
     }
   },
 

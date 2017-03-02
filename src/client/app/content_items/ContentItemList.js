@@ -58,7 +58,6 @@ var ContentItemList = React.createClass({
 
   render: function () {
     const numContentItems = this.props.contentItems.length;
-    console.log(numContentItems);
     const itemToFocus = _.find(this.props.contentItems, (ci) => {return ci.isFocused;}) ||
       _.last(this.props.contentItems);
     const itemIDToFocus = itemToFocus && itemToFocus.id;

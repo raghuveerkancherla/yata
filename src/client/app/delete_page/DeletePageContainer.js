@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import DeletePageComponent from './DeletePageComponent';
-import {deletePage} from '../actions';
+import {deletePage, changeCurrentPage} from '../actions';
+import dateUtils from '../utils/dateUtils';
 
 
 const mapStateToProps = (state) => {
@@ -14,7 +15,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onDeletePage: (pageKey, nextPageKey) => {
-      dispatch(deletePage(pageKey, nextPageKey));
+      dispatch(deletePage(pageKey));
+      nextPageKey = nextPageKey || dateUtils.getDateKey(dateUtils.getStartOfToday());
+      dispatch(changeCurrentPage(nextPageKey, 'custom'));
     }
   };
 };
