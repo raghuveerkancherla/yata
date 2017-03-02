@@ -50,7 +50,7 @@ var config = {
     new CopyWebpackPlugin([
       { from: path.resolve(BUILD_DIR, 'bundle.js'),
         to: path.resolve(GITHUB_PAGES_DIR, 'public') },
-      { from: path.resolve(APP_DIR, 'index.html', GITHUB_PAGES_DIR)}
+      { from: path.resolve(__dirname, 'src/client/index.html'), to: GITHUB_PAGES_DIR}
     ])
   ]
 };
