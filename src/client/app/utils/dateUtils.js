@@ -11,6 +11,9 @@ function getDateKey(date) {
   return date.format("YYYY/MM/DD");
 }
 
+function getStartOfToday() {
+  return moment().startOf('day');
+}
 
 function getDateSuggestionsFromNL(userInput){
   var date = chrono.parseDate(userInput);
@@ -29,12 +32,12 @@ function getDateSuggestionsFromNL(userInput){
 }
 
 function getDefaultDateSuggestions() {
-  const today = moment();
-  const tomorrow = moment().add(1, 'days');
-  const twoDaysFromNow = moment().add(2, 'days');
-  const nextWeekSameDay = moment().add(7, 'days');
+  const today = getStartOfToday();
+  const tomorrow = getStartOfToday().add(1, 'days');
+  const twoDaysFromNow = getStartOfToday().add(2, 'days');
+  const nextWeekSameDay = getStartOfToday().add(7, 'days');
   const nextMondayDelta = 7 - moment().day() + 1;
-  const nextMonday = moment().add(nextMondayDelta, 'days');
+  const nextMonday = getStartOfToday().add(nextMondayDelta, 'days');
 
   let suggestionDates = _.uniq([today, tomorrow, twoDaysFromNow, nextMonday, nextWeekSameDay]);
   const suggestions = _.map(suggestionDates, (date) => {
@@ -54,9 +57,9 @@ function getWeekDaySuggestions() {
   const nextMondayDelta = 7 - moment().day() + 1;
   const thisMondayDelta = 1 - moment().day();
   const lastMondayDelta = 1 - moment().day() - 7;
-  const nextMonday = moment().add(nextMondayDelta, 'days');
-  const thisMonday = moment().add(thisMondayDelta, 'days');
-  const lastMonday = moment().add(lastMondayDelta, 'days');
+  const nextMonday = getStartOfToday().add(nextMondayDelta, 'days');
+  const thisMonday = getStartOfToday().add(thisMondayDelta, 'days');
+  const lastMonday = getStartOfToday().add(lastMondayDelta, 'days');
 
   let thisWeekDays = _.map(_.range(0,6,1), function (delta) {
     var date = thisMonday.clone();
@@ -99,4 +102,7 @@ function getWeekDaySuggestions() {
 }
 
 export default {getDateKey, getDateSuggestionsFromNL,
-  getWeekDaySuggestions, getDateSubtext, getDisplayDate, getDefaultDateSuggestions};
+  getWeekDaySuggestions, getDateSubtext,
+  getDisplayDate, getDefaultDateSuggestions,
+  getStartOfToday
+};

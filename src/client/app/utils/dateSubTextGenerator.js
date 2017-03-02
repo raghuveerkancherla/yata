@@ -2,14 +2,13 @@ import moment from 'moment';
 
 
 function getDefaultDateSubText(date) {
-  const today = moment();
-
+  const today = moment().startOf('day');
   const days_delta = date.diff(today, 'days', true);
-  if (-2 < days_delta && days_delta <= -1) {
+  if (-1.1 < days_delta && days_delta <= -0.9) {
     return 'yesterday';
-  } else if (-1 < days_delta && days_delta < 0.9) {
+  } else if (-0.1 < days_delta && days_delta < 0.1) {
     return 'today';
-  } else if (0.9 < days_delta && days_delta < 1.9) {
+  } else if (0.9 < days_delta && days_delta < 1.1) {
     return 'tomorrow';
   } else {
     return null;
@@ -17,7 +16,7 @@ function getDefaultDateSubText(date) {
 }
 
 function getSearchSuggestionSubText(date){
-  const today = moment();
+  const today = moment().startOf('day');
   const dateIsThisWeek = date.week() == today.week();
   const dateIsNextWeek = date.week() - today.week() == 1;
   const dateIsLastWeek = date.week() - today.week() == -1;
