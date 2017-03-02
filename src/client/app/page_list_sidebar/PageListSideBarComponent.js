@@ -52,7 +52,7 @@ var PageListSidebarComponent = React.createClass({
         })}
         <div className={styles['page-switcher-wrapper']}>
           <a className={styles['page-switcher']}
-             onClick={(e) => {this.props.onShowPageSwitcher()}}>
+             onClick={() => {this.props.onShowPageSwitcher();}}>
             ...
           </a>
         </div>

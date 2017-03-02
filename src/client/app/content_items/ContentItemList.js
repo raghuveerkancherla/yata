@@ -27,14 +27,15 @@ var ContentItemList = React.createClass({
   },
 
   handleRemoveItem: function (idToRemove) {
+    const totalContentItems = this.props.contentItems.length;
     const indexToRemove = _.findIndex(
       this.props.contentItems, (ci) => {return ci.id == idToRemove;});
-    var indexToFocusNext;
+    var indexToFocusNext = null;
     if (indexToRemove == -1){
       indexToFocusNext = null;
-    } else if (indexToRemove == 0) {
+    } else if (indexToRemove == 0 && totalContentItems > 1) {
       indexToFocusNext = 1;
-    } else {
+    } else if (totalContentItems > 1){
       indexToFocusNext = indexToRemove -1;
     }
     const idToFocusNext = indexToFocusNext == null ? null :

@@ -4,6 +4,7 @@ import _ from 'lodash';
 import styles from './styles.less';
 import ClassNames from 'classnames/bind';
 import {Button, Popover, Overlay} from 'react-bootstrap';
+import dateUtils from '../utils/dateUtils';
 
 let cx = ClassNames.bind(styles);
 
@@ -21,7 +22,7 @@ var DeletePageComponent = React.createClass({
     };
   },
 
-  getNextPageKey: function() {
+  getNextCustomPageKey: function() {
     if (this.props.customPages.length <= 1) {
       return null;
     } else {
@@ -34,9 +35,12 @@ var DeletePageComponent = React.createClass({
     }
   },
 
-  handleDelete: function () {
+  deletePage: function () {
     this.setState({'displayConfirmBox': false});
-    this.props.onDeletePage(this.props.currentPage.page, this.getNextPageKey());
+    const nextCustomPageKey = this.getNextCustomPageKey();
+    const nextPageKey = nextCustomPageKey || dateUtils.getDateKey(dateUtils.getStartOfToday());
+    const nextPageType = nextCustomPageKey == null ? 'date' : 'custom';
+    this.props.onDeletePage(this.props.currentPage.page, nextPageKey, nextPageType);
   },
 
   handleDeleteOrConfirm: function (e) {
@@ -46,7 +50,7 @@ var DeletePageComponent = React.createClass({
     } else if (this.props.numTodosCurrentPage > 0) {
       this.setState({'displayConfirmBox': true});
     } else {
-      this.props.onDeletePage(this.props.currentPage.page, this.getNextPageKey());
+      this.deletePage();
     }
     e.preventDefault();
   },
@@ -63,7 +67,7 @@ var DeletePageComponent = React.createClass({
           <Button
             className={styles['dialog-buttons']}
             bsStyle="danger"
-            onClick={this.handleDelete}
+            onClick={this.deletePage}
           >Got it! Delete</Button>
         </div>
       </Popover>
